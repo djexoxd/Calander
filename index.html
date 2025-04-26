@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ne">
+  <head>
+    <meta charset="UTF-8" />
+    <title>📅 नेपाली पात्रो 2082 - Super Fancy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        overflow-x: hidden;
+        animation: gradientShift 15s ease infinite alternate;
+      }
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
+        }
+      }
+      .calendar-container {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border-radius: 25px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+        position: relative;
+        animation: fadeIn 1s ease forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .month {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(
+          270deg,
+          #ff6ec4,
+          #7873f5,
+          #4ade80,
+          #facc15,
+          #ff6ec4
+        );
+        background-size: 200% 200%;
+        animation: rainbowMove 6s ease infinite;
+        -webkit-background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 10px rgba(255, 110, 196, 0.6);
+      }
+      @keyframes rainbowMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+      }
+      .day-name {
+        font-weight: 600;
+        color: #555;
+        font-size: 0.9rem;
+      }
+      .day-name.sanibar {
+        color: red;
+      }
+      .date {
+        background: #ffffff;
+        padding: 12px 0;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+        font-weight: 600;
+        position: relative;
+      }
+      .date:hover {
+        transform: scale(1.1);
+        background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+      .sanibar-date {
+        color: red;
+      }
+      .buttons {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: space-between;
+      }
+      .buttons button {
+        background: linear-gradient(135deg, #ff416c, #ff4b2b);
+        border: none;
+        color: white;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+      .buttons button:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(135deg, #ff4b2b, #ff416c);
+      }
+      .today {
+        border: 2px solid #00bcd4;
+        background: #e0f7fa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calendar-container">
+      <div id="monthName" class="month">बैशाख 2082</div>
+      <div class="calendar" id="calendarGrid"></div>
+      <div class="buttons">
+        <button onclick="prevMonth()">⬅ पछाडि</button>
+        <button onclick="nextMonth()">अगाडि ➡</button>
+      </div>
+    </div>
+
+    <script>
+      const months = [
+        { name: "बैशाख", days: 31, startDay: 1 },
+        { name: "जेठ", days: 31, startDay: 4 },
+        { name: "आषाढ", days: 32, startDay: 6 },
+        { name: "श्रावण", days: 31, startDay: 1 },
+        { name: "भदौ", days: 31, startDay: 4 },
+        { name: "आश्विन", days: 30, startDay: 6 },
+        { name: "कार्तिक", days: 30, startDay: 1 },
+        { name: "मंसिर", days: 29, startDay: 3 },
+        { name: "पुष", days: 29, startDay: 5 },
+        { name: "माघ", days: 30, startDay: 7 },
+        { name: "फाल्गुण", days: 29, startDay: 2 },
+        { name: "चैत्र", days: 30, startDay: 4 },
+      ];
+
+      const dayNames = [
+        "आइतबार",
+        "सोमबार",
+        "मंगलबार",
+        "बुधबार",
+        "बिहीबार",
+        "शुक्रबार",
+        "शनिबार",
+      ];
+
+      let currentMonthIndex = 0;
+
+      function updateCalendar() {
+        const monthData = months[currentMonthIndex];
+        document.getElementById(
+          "monthName"
+        ).textContent = `${monthData.name} 2082`;
+
+        const calendarGrid = document.getElementById("calendarGrid");
+        calendarGrid.innerHTML = "";
+
+        dayNames.forEach((day, index) => {
+          const dayDiv = document.createElement("div");
+          dayDiv.className = "day-name";
+          if (index === 6) dayDiv.classList.add("sanibar");
+          dayDiv.textContent = day;
+          calendarGrid.appendChild(dayDiv);
+        });
+
+        const startDay = (monthData.startDay - 1 + 7) % 7;
+        for (let i = 0; i < startDay; i++) {
+          const emptyDiv = document.createElement("div");
+          calendarGrid.appendChild(emptyDiv);
+        }
+
+        for (let i = 1; i <= monthData.days; i++) {
+          const dateDiv = document.createElement("div");
+          dateDiv.className = "date";
+
+          let dayOfWeek = (startDay + i - 1) % 7;
+          if (dayOfWeek === 6) {
+            dateDiv.classList.add("sanibar-date");
+          }
+
+          dateDiv.textContent = i;
+          calendarGrid.appendChild(dateDiv);
+        }
+      }
+
+      function nextMonth() {
+        currentMonthIndex = (currentMonthIndex + 1) % months.length;
+        updateCalendar();
+      }
+
+      function prevMonth() {
+        currentMonthIndex =
+          (currentMonthIndex - 1 + months.length) % months.length;
+        updateCalendar();
+      }
+
+      updateCalendar();
+    </script>
+  </body>
+</html>
